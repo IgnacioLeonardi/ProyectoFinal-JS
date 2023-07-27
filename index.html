@@ -14,7 +14,7 @@
     <!--Toastify-->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="./style.css">
-    <title>Entrega Nº3 - Ignacio Leonardi</title>
+    <title>Entrega Final - Ignacio Leonardi</title>
 </head>
 
 <body>
@@ -44,6 +44,8 @@
                             aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Buscar</button>
                     </form>
+                    <button id="listaProductos mx-3" data-bs-toggle="modal" data-bs-target="#idModalAgregarProducto"
+                        class="btn btn-primary">Agregar Producto</button>
                     <li className="nav-item ">
                         <a id="botonCarrito" data-bs-toggle="modal" data-bs-target="#idModalCarrito"
                             class="btn btn-secondary"><i class="fas fa-shopping-cart fa-1x"></i></a>
@@ -53,83 +55,92 @@
             </div>
         </div>
     </nav>
-<!-- Botones debajo del Navbar -->
-    <div class="row">
-        <div class="m-5 col-lg-2">
-            <button id="mostrarProductos" class="btn btn-primary">Ver Productos</button>
-        </div>
-        <div class="m-5 col-lg-2">
-            <button id="ocultarProductos" class="btn btn-primary">Ocultar Productos</button>
-        </div>
-        <div class="m-5 col-lg-2">
-            <button id="mostrarForm" class="btn btn-primary">Abrir Carga De Producto</button>
-        </div>
-        <div class="m-5 col-lg-2">
-            <button id="ocultarForm" class="btn btn-primary">Cerrar Carga De Producto</button>
-        </div>
     </div>
-
+    <h3 id="loaderTexto" class="text-primary text-center mb-3">Cargando Productos</h3>
     <div class="container">
         <div id="coincidencia"></div>
-        <div id="producto" class="row"></div>
-    </div>
-    <!-- Formulario para agregar productos -->
-    <form id="formAgregarProducto" class="col-lg-6 m-5">
-        <div class="mb-3">
-            <label for="nombreProducto" class="form-label">Nombre del producto:</label>
-            <input type="text" class="form-control" id="productoInput" aria-describedby="productoNuevo">
-
+        <div id="producto" class="row mt-5">
         </div>
-        <div class="mb-3">
-            <label for="categoriaProducto" class="form-label">Categoria del producto:</label>
-            <input type="text" class="form-control" id="categoriaInput" aria-describedby="categoriaProducto">
-
+        <div id="loader" class="d-flex justify-content-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden"></span>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="precioProducto" class="form-label">Precio:</label>
-            <input type="text" class="form-control" id="precioInput" aria-describedby="precioProducto">
+        <!-- Formulario para agregar productos -->
+        <div class="modal fade" id="idModalAgregarProducto" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Agregar Libro</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="modal-body">
+                        <form id="formAgregarProducto">
+                            <div class="mb-3">
+                                <label for="nombreProducto" class="form-label">Nombre del producto:</label>
+                                <input type="text" class="form-control" id="productoInput"
+                                    aria-describedby="productoNuevo">
 
-        </div>
-        <div>
-            <button type="text" id="guardarProductoBtn" class="btn btn-primary">Guardar Producto</button>
-        </div>
-    </form>
-    <!-- Carrito -->
-    <div class="modal fade" id="idModalCarrito" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Carrito de Compras</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="modal-bodyCarrito">
+                            </div>
+                            <div class="mb-3">
+                                <label for="categoriaProducto" class="form-label">Categoria del producto:</label>
+                                <input type="text" class="form-control" id="categoriaInput"
+                                    aria-describedby="categoriaProducto">
 
-                </div>
-                <div class="row ml-ato">
-                    <p id="precioTotal"></p>
-                </div>
-                <div class="modal-footer">
+                            </div>
+                            <div class="mb-3">
+                                <label for="precioProducto" class="form-label">Precio:</label>
+                                <input type="text" class="form-control" id="precioInput"
+                                    aria-describedby="precioProducto">
 
-
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" data-bs-dismiss="modal" class="btn btn-primary"
-                        id="botonFinalizarCompra">Finalizar Compra</button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="text" id="guardarProductoBtn" class="btn btn-primary"
+                                    data-bs-dismiss="modal">Guardar Producto</button>
+                            </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!--Script de Bootstrap-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
-        </script>
-    <!--Script Sweet alert-->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!--Toastify-->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+        <!-- Carrito -->
+        <div class="modal fade" id="idModalCarrito" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Carrito de Compras</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="modal-bodyCarrito">
 
-    <!-- Script mios -->
-    <script src="./classConstructora.js"></script>
-    <script src="./main.js"></script>
+                    </div>
+                    <div class="row ml-ato">
+                        <p id="precioTotal"></p>
+                    </div>
+                    <div class="modal-footer">
+
+
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" data-bs-dismiss="modal" class="btn btn-primary"
+                            id="botonFinalizarCompra">Finalizar Compra</button>
+                    </div>
+                </div>
+            </div>
+
+            <!--Script de Bootstrap-->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+                crossorigin="anonymous">
+                </script>
+            <!--Script Sweet alert-->
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <!--Toastify-->
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+            <!-- Script mios -->
+            <script src="./classConstructora.js"></script>
+            <script src="./main.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,72 @@
+[
+    {
+        "id": 1,
+        "nombre": "Coca-Cola",
+        "categoria": "Bebidas",
+        "precio": 620,
+        "imagen": "coca.jpg"
+    },
+    {
+        "id": 2,
+        "nombre": "Galletitas",
+        "categoria": "Comestibles",
+        "precio": 450,
+        "imagen": "galletitas.jpg"
+    },
+    {
+        "id": 3,
+        "nombre": "Jugo",
+        "categoria": "Bebidas",
+        "precio": 300,
+        "imagen": "jugo.jpg"
+    },
+    {
+        "id": 4,
+        "nombre": "Papel Higienico",
+        "categoria": "Limpieza",
+        "precio": 1200,
+        "imagen": "papel.jpg"
+    },
+    {
+        "id": 5,
+        "nombre": "Fernet",
+        "categoria": "Bebidas",
+        "precio": 2000,
+        "imagen": "fernet.jpg"
+    },
+    {
+        "id": 6,
+        "nombre": "Carbón",
+        "categoria": "Asado",
+        "precio": 730,
+        "imagen": "carbon.jpg"
+    },
+    {
+        "id": 7,
+        "nombre": "Cerveza",
+        "categoria": "Bebidas",
+        "precio": 700,
+        "imagen": "cerveza.jpg"
+    },
+    {
+        "id": 8,
+        "nombre": "Mayonesa",
+        "categoria": "Comestibles",
+        "precio": 900,
+        "imagen": "mayonesa.jpg"
+    },
+    {
+        "id": 9,
+        "nombre": "Azucar",
+        "categoria": "Comestibles",
+        "precio": 500,
+        "imagen": "azucar.jpg"
+    },
+    {
+        "id": 10,
+        "nombre": "Desodorante",
+        "categoria": "Higiene",
+        "precio": 650,
+        "imagen": "desodorante.jpg"
+    }
+]

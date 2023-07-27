@@ -1,25 +1,17 @@
 
 let productoDiv = document.getElementById("producto")
-let mostrarProductos = document.getElementById("mostrarProductos")
-let ocultarProductos = document.getElementById("ocultarProductos")
-let mostrarForm = document.getElementById("mostrarForm")
-let ocultarForm = document.getElementById("ocultarForm")
 let botonCarrito = document.getElementById("botonCarrito")
 let modalBodyCarrito = document.getElementById("modal-bodyCarrito")
 let selectOrden = document.getElementById("selectOrden")
 let productoNuevo = document.getElementById("guardarProductoBtn")
+let precioTotal = document.getElementById("precioTotal")
+let loader = document.getElementById("loader")
+let loaderTexto = document.getElementById("loaderTexto")
 let buscador = document.getElementById("buscador")
 let coincidencia = document.getElementById("coincidencia")
+let botonFinalizarCompra = document.getElementById("botonFinalizarCompra")
 
-document.getElementById("formAgregarProducto").style.visibility = "hidden";
-// Función para ver el formulario
-function verForm() {
-    document.getElementById("formAgregarProducto").style.visibility = "visible";
-}
-// Función para ocultar el formulario
-function noVerForm() {
-    document.getElementById("formAgregarProducto").style.visibility = "hidden";
-}
+
 // Chequeo para ver si existe algo en el carrito
 let productosEnCarrito
 if (localStorage.getItem("carrito")) {
@@ -28,6 +20,7 @@ if (localStorage.getItem("carrito")) {
     productosEnCarrito = []
     localStorage.setItem("carrito", productosEnCarrito)
 }
+
 // Función para mostrar productos
 function listaProductos(array) {
     //Reset DOM
@@ -78,10 +71,37 @@ function agregarAlCarrito(producto) {
         })
     }
 }
+// Función para agregar producto nuevo
+function agregarProducto(array) {
+    let nombreProducto = document.getElementById("productoInput")
+    let categoriaProducto = document.getElementById("categoriaInput")
+    let precioProducto = document.getElementById("precioInput")
+    const productoNuevo = new Producto(array.length + 1, nombreProducto.value, categoriaProducto.value, parseInt(precioProducto.value), "productonuevo.jpg")
+    array.push(productoNuevo)
+    localStorage.setItem("productos", JSON.stringify(array))
+    listaProductos(array)
+
+    //resetear el form
+    nombreProducto.value = ""
+    categoriaProducto.value = ""
+    precioProducto.value = ""
+
+    Toastify(
+        {
+            text: `${productoNuevo.nombre} se ha agregado`,
+            duration: 3000,
+            gravity: "bottom",//top o buttom,
+            position: "center",//left, right o center
+            style: {
+                color: "white",
+                background: "green"
+            }
+        }
+    ).showToast()
+}
 // Función para cargar los productos al carrito
 function cargarProductosCarrito(array) {
     modalBodyCarrito.innerHTML = ``
-    //primer for each imprime las card
     array.forEach((productoCarrito) => {
         modalBodyCarrito.innerHTML += `
     
@@ -97,27 +117,14 @@ function cargarProductosCarrito(array) {
        
     `
     })
-    //segundo for each adjunta evento eliminar
     array.forEach((productoCarrito) => {
-        //manipular el DOM sin guardar en variable
         document.getElementById(`botonEliminar${productoCarrito.id}`).addEventListener("click", () => {
-            console.log(`Eliminar producto`)
-            //borrar del DOM
             let cardProducto = document.getElementById(`productoCarrito${productoCarrito.id}`)
             cardProducto.remove()
-            //borrar del array
-            //encontramos objeto a eliminar
             let productoEliminar = array.find((producto) => producto.id == productoCarrito.id)
-            console.log(productoEliminar)
-            //buscar indice
             let posicion = array.indexOf(productoEliminar)
-            console.log(posicion)
             array.splice(posicion, 1)
-            console.log(array)
-            //setear storage
             localStorage.setItem("carrito", JSON.stringify(array))
-
-            //debemos calcularTotal??
             calcularTotal(array)
         })
     })
@@ -128,6 +135,7 @@ function cargarProductosCarrito(array) {
 function calcularTotal(array) {
     let total = array.reduce((acc, productoCarrito) => acc + productoCarrito.precio, 0)
     total == 0 ? precioTotal.innerHTML = `No hay productos en el carrito` : precioTotal.innerHTML = `El total es $<strong>${total}</strong>`
+    return total
 }
 // Función para ordenar los productos
 function ordenar(array, opcion) {
@@ -172,35 +180,7 @@ function ordenar(array, opcion) {
             break
     }
 }
-// Función para agregar producto nuevo
-function agregarProducto(array) {
-    let nombreProducto = document.getElementById("productoInput")
-    let categoriaProducto = document.getElementById("categoriaInput")
-    let precioProducto = document.getElementById("precioInput")
-    const productoNuevo = new Producto(array.length + 1, nombreProducto.value, categoriaProducto.value, precioProducto.value, "productonuevo.jpg")
-    array.push(productoNuevo)
-    localStorage.setItem("productos", JSON.stringify(array))
-    listaProductos(array)
-
-    //resetear el form
-    nombreProducto.value = ""
-    categoriaProducto.value = ""
-    precioProducto.value = ""
-
-    //Toastify
-    Toastify(
-        {
-            text: `${productoNuevo.nombre} se ha agregado`,
-            duration: 3000,
-            gravity: "bottom",//top o buttom,
-            position: "center",//left, right o center
-            style: {
-                color: "white",
-                background: "green"
-            }
-        }
-    ).showToast()
-}
+//Funcion para buscar productos
 function buscar(buscado, array) {
     let busqueda = array.filter(
         (dato) => dato.nombre.toLowerCase().includes(buscado.toLowerCase()) || dato.categoria.toLowerCase().includes(buscado.toLowerCase())
@@ -210,21 +190,39 @@ function buscar(buscado, array) {
             listaProductos(busqueda)) :
         (coincidencia.innerHTML = "", listaProductos(busqueda))
 }
-
+//Funcion para finalizar compra
+function finalizarCompra(array) {
+    Swal.fire({
+        title: '¿Seguro que desea realizar la compra?',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, seguro',
+        cancelButtonText: 'No, seguir comprando',
+        confirmButtonColor: 'green',
+        cancelButtonColor: 'red',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let totalFinal = calcularTotal(array)
+            Swal.fire({
+                title: 'Compra realizada',
+                icon: 'success',
+                confirmButtonColor: 'green',
+                text: `Muchas gracias por su compra!! El total a pagar es $${totalFinal}.`,
+            })
+            productosEnCarrito = []
+            localStorage.removeItem("carrito")
+        } else {
+            Swal.fire({
+                title: 'Compra no realizada',
+                icon: 'info',
+                text: `La compra no realizada! Sus productos siguen cargados en el carrito!`,
+                confirmButtonColor: 'green',
+                timer: 3500
+            })
+        }
+    })
+}
 // Eventos
-
-mostrarProductos.addEventListener("click", () => {
-    listaProductos(productos)
-})
-ocultarProductos.addEventListener("click", () => {
-    productoDiv.innerHTML = ``
-})
-mostrarForm.addEventListener("click", () => {
-    verForm()
-})
-ocultarForm.addEventListener("click", () => {
-    noVerForm()
-})
 botonCarrito.addEventListener("click", () => {
     cargarProductosCarrito(productosEnCarrito)
 })
@@ -252,4 +250,12 @@ productoNuevo.addEventListener("click", function (event) {
 })
 buscador.addEventListener("input", () => {
     buscar(buscador.value, productos)
+})
+setTimeout(() => {
+    loaderTexto.innerText = `Nuestros Productos`
+    loader.remove()
+    listaProductos(productos)
+}, 2000)
+botonFinalizarCompra.addEventListener("click", () => {
+    finalizarCompra(productosEnCarrito)
 })
